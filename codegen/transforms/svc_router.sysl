@@ -148,8 +148,8 @@ CodeGenTransform:
         )
       )
 
-      let handleError = app -> <MethodSpec>(:
-        MethodName = "HandleError"
+      let mapError = app -> <MethodSpec>(:
+        MethodName = "MapError"
         Signature = app -> <Signature> (:
           Parameters = app -> <Parameters>(:
             ParameterList = app -> <ParameterList>(:
@@ -184,7 +184,11 @@ CodeGenTransform:
               ParameterDeclC = [w,k,m,c]
             )
           )
+          Result = app -> <Result>(:
+            TypeName = "common.HandleError"
+          )
         )
+
       )
 
       let downstream = app -> <MethodSpec>(:
@@ -242,7 +246,7 @@ CodeGenTransform:
         Declaration = app -> <Declaration>(:
           InterfaceType = app -> <InterfaceType>(:
             InterfaceName = "GenCallback"
-            MethodSpec = [addMiddleware, basePath, config, handleError, downstream]
+            MethodSpec = [addMiddleware, basePath, config, mapError, downstream]
           )
         )
       )
