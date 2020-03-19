@@ -157,12 +157,6 @@ CodeGenTransform:
                 Identifier = "ctx"
                 TypeName = "context.Context"
               )
-              let w = app -> <ParameterList>(:
-                ParameterDecl = app -> <ParameterDecl>(:
-                  Identifier = "w"
-                  TypeName = "http.ResponseWriter"
-                )
-              )
               let k = app -> <ParameterList>(:
                 ParameterDecl = app -> <ParameterDecl>(:
                   Identifier = "kind"
@@ -181,7 +175,7 @@ CodeGenTransform:
                   TypeName = "error"
                 )
               )
-              ParameterDeclC = [w,k,m,c]
+              ParameterDeclC = [k,m,c]
             )
           )
           Result = app -> <Result>(:

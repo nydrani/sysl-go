@@ -2,7 +2,6 @@ package simple
 
 import (
 	"context"
-	"net/http"
 	"time"
 
 	"github.com/anz-bank/sysl-go/common"
@@ -27,7 +26,7 @@ func (c Callback) Config() validator.Validator {
 	return Config{}
 }
 
-func (c Callback) MapError(ctx context.Context, w http.ResponseWriter, kind common.Kind, message string, cause error) common.HTTPError {
+func (c Callback) MapError(ctx context.Context, kind common.Kind, message string, cause error) common.HTTPError {
 	se := common.CreateError(ctx, kind, message, cause)
 
 	return common.HandleError(ctx, se)

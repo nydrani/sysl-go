@@ -88,7 +88,7 @@ CodeGenTransform:
             let interfaceCall = condition -> <StatementList> (:
               Statement = condition -> <Statement> (:
                 FunctionCall = condition -> <ReturnStmt> (:
-                  FunctionName = "s.HandleError"
+                  FunctionName = "s.handleError"
                   FunctionArgs = condition -> <FunctionArgs> (:
                     Expression = makeValueExpr("ctx")
                     let writer = condition -> <FuncArgsRest> (:
@@ -131,7 +131,7 @@ CodeGenTransform:
             let interfaceCall = condition -> <StatementList> (:
               Statement = condition -> <Statement> (:
                 FunctionCall = condition -> <ReturnStmt> (:
-                  FunctionName = "s.HandleError"
+                  FunctionName = "s.handleError"
                   FunctionArgs = condition -> <FunctionArgs> (:
                     Expression = makeValueExpr("ctx")
                     let writer = condition -> <FuncArgsRest> (:
@@ -682,7 +682,7 @@ CodeGenTransform:
               IfElseStmt = implFuncName -> <IfElseStmt>(:
                 Expression = makeValueExpr("s.serviceInterface." + implFuncName + " == nil")
                 Block = implFuncName -> <Block>(:
-                    let handleError =  makeFunctionCall("s.HandleError", makeValueExpr("r.Context()"), [makeValueExpr("w"), makeValueExpr("common.InternalError"), makeValueExpr('"not implemented"'), makeValueExpr("nil")])
+                    let handleError =  makeFunctionCall("s.handleError", makeValueExpr("r.Context()"), [makeValueExpr("w"), makeValueExpr("common.InternalError"), makeValueExpr('"not implemented"'), makeValueExpr("nil")])
 
                     let returnError = implFuncName -> <StatementList>(:
                       Statement = implFuncName -> <Statement>(:
@@ -1072,7 +1072,7 @@ CodeGenTransform:
         Comment = "// Handler Error "
         
         MethodDecl = name -> <FunctionDecl>(:
-          FunctionName = "HandleError"
+          FunctionName = "handleError"
           Receiver = name -> <Receiver>(:
             ReceiverType = "s *ServiceHandler"       
           )
@@ -1122,7 +1122,7 @@ CodeGenTransform:
                       FunctionName = "s.genCallback.MapError"
                       FunctionArgs = name -> <FunctionArgs>(:
                         Expression = name -> <Expression>(:
-                          ValueExpr = "ctx, w, kind, message, cause"
+                          ValueExpr = "ctx, kind, message, cause"
                         )
                       )
                     )

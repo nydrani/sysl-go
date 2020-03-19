@@ -17,7 +17,7 @@ type GenCallback interface {
 	AddMiddleware(ctx context.Context, r chi.Router)
 	BasePath() string
 	Config() validator.Validator
-	MapError(ctx context.Context, w http.ResponseWriter, kind common.Kind, message string, cause error) common.HTTPError
+	MapError(ctx context.Context, kind common.Kind, message string, cause error) common.HTTPError
 	DownstreamTimeoutContext(ctx context.Context) (context.Context, context.CancelFunc)
 }
 
