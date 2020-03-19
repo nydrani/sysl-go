@@ -2,6 +2,7 @@
 package simple
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -31,10 +32,16 @@ func NewServiceHandler(genCallback GenCallback, serviceInterface *ServiceInterfa
 	return &ServiceHandler{genCallback, serviceInterface}
 }
 
+// Handler Error
+func (s *ServiceHandler) HandleError(ctx context.Context, w http.ResponseWriter, kind common.Kind, message string, cause error) {
+	httpError := s.genCallback.MapError(ctx, kind, messge, cause)
+	httpError.WriteError(ctx, w)
+}
+
 // GetOopsListHandler ...
 func (s *ServiceHandler) GetOopsListHandler(w http.ResponseWriter, r *http.Request) {
 	if s.serviceInterface.GetOopsList == nil {
-		s.genCallback.HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
+		HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
 		return
 	}
 
@@ -46,7 +53,7 @@ func (s *ServiceHandler) GetOopsListHandler(w http.ResponseWriter, r *http.Reque
 	defer cancel()
 	valErr := validator.Validate(&req)
 	if valErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
 		return
 	}
 
@@ -54,7 +61,7 @@ func (s *ServiceHandler) GetOopsListHandler(w http.ResponseWriter, r *http.Reque
 
 	response, err := s.serviceInterface.GetOopsList(ctx, &req, client)
 	if err != nil {
-		s.genCallback.HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
+		HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
 		return
 	}
 
@@ -66,7 +73,7 @@ func (s *ServiceHandler) GetOopsListHandler(w http.ResponseWriter, r *http.Reque
 // GetRawListHandler ...
 func (s *ServiceHandler) GetRawListHandler(w http.ResponseWriter, r *http.Request) {
 	if s.serviceInterface.GetRawList == nil {
-		s.genCallback.HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
+		HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
 		return
 	}
 
@@ -78,7 +85,7 @@ func (s *ServiceHandler) GetRawListHandler(w http.ResponseWriter, r *http.Reques
 	defer cancel()
 	valErr := validator.Validate(&req)
 	if valErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
 		return
 	}
 
@@ -86,7 +93,7 @@ func (s *ServiceHandler) GetRawListHandler(w http.ResponseWriter, r *http.Reques
 
 	str, err := s.serviceInterface.GetRawList(ctx, &req, client)
 	if err != nil {
-		s.genCallback.HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
+		HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
 		return
 	}
 
@@ -98,7 +105,7 @@ func (s *ServiceHandler) GetRawListHandler(w http.ResponseWriter, r *http.Reques
 // GetRawIntListHandler ...
 func (s *ServiceHandler) GetRawIntListHandler(w http.ResponseWriter, r *http.Request) {
 	if s.serviceInterface.GetRawIntList == nil {
-		s.genCallback.HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
+		HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
 		return
 	}
 
@@ -110,7 +117,7 @@ func (s *ServiceHandler) GetRawIntListHandler(w http.ResponseWriter, r *http.Req
 	defer cancel()
 	valErr := validator.Validate(&req)
 	if valErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
 		return
 	}
 
@@ -118,7 +125,7 @@ func (s *ServiceHandler) GetRawIntListHandler(w http.ResponseWriter, r *http.Req
 
 	integer, err := s.serviceInterface.GetRawIntList(ctx, &req, client)
 	if err != nil {
-		s.genCallback.HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
+		HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
 		return
 	}
 
@@ -130,7 +137,7 @@ func (s *ServiceHandler) GetRawIntListHandler(w http.ResponseWriter, r *http.Req
 // GetStuffListHandler ...
 func (s *ServiceHandler) GetStuffListHandler(w http.ResponseWriter, r *http.Request) {
 	if s.serviceInterface.GetStuffList == nil {
-		s.genCallback.HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
+		HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
 		return
 	}
 
@@ -154,25 +161,25 @@ func (s *ServiceHandler) GetStuffListHandler(w http.ResponseWriter, r *http.Requ
 	ItParam = restlib.GetQueryParam(r, "it")
 	req.Dt, convErr = convert.StringToTimePtr(ctx, DtParam)
 	if convErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
 		return
 	}
 
 	req.St, convErr = convert.StringToStringPtr(ctx, StParam)
 	if convErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
 		return
 	}
 
 	req.Bt, convErr = convert.StringToBoolPtr(ctx, BtParam)
 	if convErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
 		return
 	}
 
 	req.It, convErr = convert.StringToIntPtr(ctx, ItParam)
 	if convErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", convErr)
 		return
 	}
 
@@ -180,7 +187,7 @@ func (s *ServiceHandler) GetStuffListHandler(w http.ResponseWriter, r *http.Requ
 	defer cancel()
 	valErr := validator.Validate(&req)
 	if valErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
 		return
 	}
 
@@ -188,7 +195,7 @@ func (s *ServiceHandler) GetStuffListHandler(w http.ResponseWriter, r *http.Requ
 
 	stuff, err := s.serviceInterface.GetStuffList(ctx, &req, client)
 	if err != nil {
-		s.genCallback.HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
+		HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
 		return
 	}
 
@@ -200,7 +207,7 @@ func (s *ServiceHandler) GetStuffListHandler(w http.ResponseWriter, r *http.Requ
 // PostStuffHandler ...
 func (s *ServiceHandler) PostStuffHandler(w http.ResponseWriter, r *http.Request) {
 	if s.serviceInterface.PostStuff == nil {
-		s.genCallback.HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
+		HandleError(r.Context(), w, common.InternalError, "not implemented", nil)
 		return
 	}
 
@@ -211,7 +218,7 @@ func (s *ServiceHandler) PostStuffHandler(w http.ResponseWriter, r *http.Request
 	decoder := json.NewDecoder(r.Body)
 	decodeErr := decoder.Decode(&req.Request)
 	if decodeErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Error reading request body", decodeErr)
+		HandleError(ctx, w, common.BadRequestError, "Error reading request body", decodeErr)
 		return
 	}
 
@@ -219,7 +226,7 @@ func (s *ServiceHandler) PostStuffHandler(w http.ResponseWriter, r *http.Request
 	defer cancel()
 	valErr := validator.Validate(&req)
 	if valErr != nil {
-		s.genCallback.HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
+		HandleError(ctx, w, common.BadRequestError, "Invalid request", valErr)
 		return
 	}
 
@@ -227,7 +234,7 @@ func (s *ServiceHandler) PostStuffHandler(w http.ResponseWriter, r *http.Request
 
 	str, err := s.serviceInterface.PostStuff(ctx, &req, client)
 	if err != nil {
-		s.genCallback.HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
+		HandleError(ctx, w, common.DownstreamUnexpectedResponseError, "Downstream failure", err)
 		return
 	}
 
