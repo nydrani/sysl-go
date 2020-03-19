@@ -185,7 +185,7 @@ CodeGenTransform:
             )
           )
           Result = app -> <Result>(:
-            TypeName = "common.HandleError"
+            TypeName = "common.HTTPError"
           )
         )
 
